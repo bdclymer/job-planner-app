@@ -4,7 +4,7 @@
   "description": "Modern project management website for construction job planning",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node server-standalone.js",
     "dev": "nodemon server.js",
     "build": "npm run build:css && npm run build:js",
     "build:css": "postcss public/css/styles.css -o public/css/styles.min.css",
