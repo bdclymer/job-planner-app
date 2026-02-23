@@ -1,0 +1,388 @@
+<div class="dashboard-header">
+    <h1>Project Management Dashboard</h1>
+    <p class="text-muted">Welcome to Job Planner. Manage your construction projects, resources, and schedules in one place.</p>
+</div>
+
+<!-- Stats Overview -->
+<div class="stats-grid mb-3">
+    <div class="stat-card">
+        <div class="stat-value" id="total-projects">0</div>
+        <div class="stat-label">Total Projects</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value" id="active-jobs">0</div>
+        <div class="stat-label">Active Jobs</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value" id="upcoming-tasks">0</div>
+        <div class="stat-label">Upcoming Tasks</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value" id="total-resources">0</div>
+        <div class="stat-label">Total Resources</div>
+    </div>
+</div>
+
+<!-- Main Dashboard Grid -->
+<div class="dashboard-grid">
+    <!-- Projects Overview -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Projects Overview</h2>
+            <div class="card-icon projects">📋</div>
+        </div>
+        <div class="chart-container">
+            <canvas id="project-status-chart" height="200"></canvas>
+        </div>
+        <div class="card-footer">
+            <a href="/projects" class="btn btn-primary">View All Projects</a>
+        </div>
+    </div>
+
+    <!-- Recent Projects -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Recent Projects</h2>
+            <div class="card-icon projects">📊</div>
+        </div>
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Project Name</th>
+                        <th>Status</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="recent-projects-body">
+                    <tr>
+                        <td colspan="5" class="text-center">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Resource Utilization -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Resource Utilization</h2>
+            <div class="card-icon resources">⚙️</div>
+        </div>
+        <div class="chart-container">
+            <canvas id="resource-utilization-chart" height="200"></canvas>
+        </div>
+        <div class="card-footer">
+            <a href="/resources" class="btn btn-primary">Manage Resources</a>
+        </div>
+    </div>
+
+    <!-- Upcoming Schedule -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Upcoming Schedule</h2>
+            <div class="card-icon schedule">📅</div>
+        </div>
+        <div id="upcoming-schedule">
+            <div class="loading">
+                <div class="spinner"></div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <a href="/schedule" class="btn btn-primary">View Full Schedule</a>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Quick Actions</h2>
+            <div class="card-icon">🚀</div>
+        </div>
+        <div class="quick-actions">
+            <div class="action-grid">
+                <a href="/projects/new" class="action-card">
+                    <div class="action-icon">➕</div>
+                    <div class="action-title">New Project</div>
+                    <div class="action-description">Create a new construction project</div>
+                </a>
+                <a href="/jobs/new" class="action-card">
+                    <div class="action-icon">🔨</div>
+                    <div class="action-title">New Job</div>
+                    <div class="action-description">Add a new job to a project</div>
+                </a>
+                <a href="/schedule/new" class="action-card">
+                    <div class="action-icon">📝</div>
+                    <div class="action-title">Schedule Task</div>
+                    <div class="action-description">Schedule a new task</div>
+                </a>
+                <a href="/reports" class="action-card">
+                    <div class="action-icon">📈</div>
+                    <div class="action-title">Generate Report</div>
+                    <div class="action-description">Create project reports</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Status -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">System Status</h2>
+            <div class="card-icon">🟢</div>
+        </div>
+        <div class="system-status">
+            <div class="status-item">
+                <div class="status-indicator online"></div>
+                <div class="status-details">
+                    <div class="status-title">API Server</div>
+                    <div class="status-description">Connected and operational</div>
+                </div>
+            </div>
+            <div class="status-item">
+                <div class="status-indicator online"></div>
+                <div class="status-details">
+                    <div class="status-title">Database</div>
+                    <div class="status-description">PostgreSQL connection active</div>
+                </div>
+            </div>
+            <div class="status-item">
+                <div class="status-indicator online"></div>
+                <div class="status-details">
+                    <div class="status-title">Job Planner API</div>
+                    <div class="status-description">Integrated and responding</div>
+                </div>
+            </div>
+            <div class="status-item">
+                <div class="status-indicator online"></div>
+                <div class="status-details">
+                    <div class="status-title">Authentication</div>
+                    <div class="status-description">JWT tokens working</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional Styles -->
+<style>
+.dashboard-header {
+    margin-bottom: var(--spacing-xl);
+}
+
+.dashboard-header h1 {
+    margin-bottom: var(--spacing-sm);
+}
+
+.chart-container {
+    position: relative;
+    height: 200px;
+    margin: var(--spacing-md) 0;
+}
+
+.card-footer {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.quick-actions {
+    padding: var(--spacing-md) 0;
+}
+
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+}
+
+.action-card {
+    background: var(--gray-100);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    text-align: center;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+}
+
+.action-card:hover {
+    background: var(--gray-200);
+    transform: translateY(-2px);
+}
+
+.action-icon {
+    font-size: 24px;
+    margin-bottom: var(--spacing-sm);
+}
+
+.action-title {
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+    color: var(--gray-900);
+}
+
+.action-description {
+    font-size: var(--font-size-sm);
+    color: var(--gray-600);
+}
+
+.system-status {
+    padding: var(--spacing-md) 0;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.status-item:last-child {
+    border-bottom: none;
+}
+
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.status-indicator.online {
+    background: var(--success-color);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.status-indicator.offline {
+    background: var(--danger-color);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+.status-details {
+    flex: 1;
+}
+
+.status-title {
+    font-weight: 500;
+    color: var(--gray-900);
+}
+
+.status-description {
+    font-size: var(--font-size-sm);
+    color: var(--gray-600);
+}
+
+.project-name {
+    display: flex;
+    flex-direction: column;
+}
+
+.project-name small {
+    font-size: var(--font-size-xs);
+    color: var(--gray-500);
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-active {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-completed {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.status-on-hold {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-planning {
+    background: #f3e8ff;
+    color: #6b21a8;
+}
+
+.schedule-item {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) 0;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.schedule-item:last-child {
+    border-bottom: none;
+}
+
+.schedule-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+    background: var(--gray-100);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-sm);
+}
+
+.schedule-day {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.schedule-month {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    color: var(--gray-600);
+}
+
+.schedule-details {
+    flex: 1;
+}
+
+.schedule-title {
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+    color: var(--gray-900);
+}
+
+.schedule-description {
+    font-size: var(--font-size-sm);
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-xs);
+}
+
+.schedule-meta {
+    display: flex;
+    gap: var(--spacing-md);
+    font-size: var(--font-size-xs);
+    color: var(--gray-500);
+}
+
+.schedule-time::before {
+    content: "🕒 ";
+}
+
+.schedule-location::before {
+    content: "📍 ";
+}
+</style>

@@ -1,0 +1,307 @@
+<div class="page-header">
+    <div class="header-content">
+        <h1>Projects</h1>
+        <p class="text-muted">Manage all construction projects, track progress, and monitor resources.</p>
+    </div>
+    <div class="header-actions">
+        <a href="/projects/new" class="btn btn-primary">
+            <span>➕</span> New Project
+        </a>
+    </div>
+</div>
+
+<!-- Projects Filter -->
+<div class="card mb-3">
+    <div class="card-header">
+        <h2 class="card-title">Filter Projects</h2>
+    </div>
+    <div class="card-body">
+        <form class="filter-form" id="projects-filter">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select class="form-control" name="status">
+                        <option value="">All Statuses</option>
+                        <option value="active">Active</option>
+                        <option value="completed">Completed</option>
+                        <option value="on-hold">On Hold</option>
+                        <option value="planning">Planning</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Date Range</label>
+                    <select class="form-control" name="dateRange">
+                        <option value="">All Time</option>
+                        <option value="this-week">This Week</option>
+                        <option value="this-month">This Month</option>
+                        <option value="this-quarter">This Quarter</option>
+                        <option value="this-year">This Year</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Search</label>
+                    <input type="text" class="form-control" name="search" placeholder="Search projects...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">&nbsp;</label>
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    <button type="reset" class="btn btn-outline">Clear</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Projects Table -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">All Projects</h2>
+        <div class="card-actions">
+            <span class="text-muted"><%= projects.length %> projects found</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <% if (projects.length === 0) { %>
+            <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <h3>No Projects Found</h3>
+                <p>Get started by creating your first project.</p>
+                <a href="/projects/new" class="btn btn-primary">Create Project</a>
+            </div>
+        <% } else { %>
+            <div class="table-responsive">
+                <table class="table data-table">
+                    <thead>
+                        <tr>
+                            <th data-sortable="true">Project Name</th>
+                            <th data-sortable="true">Code</th>
+                            <th data-sortable="true">Status</th>
+                            <th data-sortable="true">Start Date</th>
+                            <th data-sortable="true">End Date</th>
+                            <th data-sortable="true">Budget</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% projects.forEach(project => { %>
+                            <tr>
+                                <td>
+                                    <div class="project-info">
+                                        <strong><%= project.name %></strong>
+                                        <% if (project.description) { %>
+                                            <div class="text-muted"><%= project.description.substring(0, 50) %>...</div>
+                                        <% } %>
+                                    </div>
+                                </td>
+                                <td><code><%= project.code || 'N/A' %></code></td>
+                                <td>
+                                    <span class="status-badge <%= getStatusClass(project.status) %>">
+                                        <%= project.status || 'Unknown' %>
+                                    </span>
+                                </td>
+                                <td><%= formatDate(project.startDate) %></td>
+                                <td><%= formatDate(project.endDate) %></td>
+                                <td>
+                                    <% if (project.budget) { %>
+                                        $<%= Number(project.budget).toLocaleString() %>
+                                    <% } else { %>
+                                        N/A
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="/projects/<%= project.id %>" class="btn btn-sm btn-outline" title="View">
+                                            👁️
+                                        </a>
+                                        <a href="/projects/<%= project.id %>/edit" class="btn btn-sm btn-outline" title="Edit">
+                                            ✏️
+                                        </a>
+                                        <button class="btn btn-sm btn-outline" title="Delete" onclick="confirmDelete('<%= project.id %>', '<%= project.name %>')">
+                                            🗑️
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="btn btn-outline" disabled>Previous</button>
+                <span class="page-info">Page 1 of 1</span>
+                <button class="btn btn-outline" disabled>Next</button>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<!-- Project Stats -->
+<div class="card mt-3">
+    <div class="card-header">
+        <h2 class="card-title">Project Statistics</h2>
+    </div>
+    <div class="card-body">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value"><%= projects.filter(p => p.status === 'active').length %></div>
+                <div class="stat-label">Active Projects</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value"><%= projects.filter(p => p.status === 'completed').length %></div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">
+                    $<%= projects.reduce((sum, p) => sum + (Number(p.budget) || 0), 0).toLocaleString() %>
+                </div>
+                <div class="stat-label">Total Budget</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">
+                    <%= Math.round(projects.filter(p => p.status === 'completed').length / Math.max(projects.length, 1) * 100) %>%
+                </div>
+                <div class="stat-label">Completion Rate</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional Styles -->
+<style>
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-xl);
+}
+
+.header-content h1 {
+    margin-bottom: var(--spacing-sm);
+}
+
+.header-actions {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+    align-items: end;
+}
+
+.empty-state {
+    text-align: center;
+    padding: var(--spacing-2xl) var(--spacing-xl);
+}
+
+.empty-icon {
+    font-size: 48px;
+    margin-bottom: var(--spacing-md);
+}
+
+.empty-state h3 {
+    margin-bottom: var(--spacing-sm);
+}
+
+.action-buttons {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.action-buttons .btn {
+    padding: 4px 8px;
+    min-width: auto;
+}
+
+.project-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.project-info .text-muted {
+    font-size: var(--font-size-sm);
+    margin-top: 2px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--gray-200);
+}
+
+.page-info {
+    color: var(--gray-600);
+}
+</style>
+
+<!-- Scripts -->
+<script>
+function confirmDelete(projectId, projectName) {
+    if (confirm(`Are you sure you want to delete project "${projectName}"? This action cannot be undone.`)) {
+        deleteProject(projectId);
+    }
+}
+
+async function deleteProject(projectId) {
+    try {
+        const response = await fetch(`/api/projects/${projectId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            showNotification('Project deleted successfully', 'success');
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } else {
+            throw new Error('Failed to delete project');
+        }
+    } catch (error) {
+        console.error('Error deleting project:', error);
+        showNotification('Failed to delete project', 'error');
+    }
+}
+
+// Filter form submission
+document.getElementById('projects-filter').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const filters = Object.fromEntries(formData.entries());
+    
+    // Apply filters (in a real app, this would make an API call)
+    console.log('Applying filters:', filters);
+    showNotification('Filters applied', 'info');
+});
+
+// Helper functions for template
+function getStatusClass(status) {
+    const statusMap = {
+        'active': 'status-active',
+        'completed': 'status-completed',
+        'on-hold': 'status-on-hold',
+        'planning': 'status-planning'
+    };
+    return statusMap[status] || 'status-default';
+}
+
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+}
+</script>

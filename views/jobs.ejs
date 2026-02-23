@@ -1,0 +1,211 @@
+<div class="page-header">
+    <div class="header-content">
+        <h1>Jobs</h1>
+        <p class="text-muted">Manage construction jobs, assign resources, and track progress.</p>
+    </div>
+    <div class="header-actions">
+        <a href="/jobs/new" class="btn btn-primary">
+            <span>🔨</span> New Job
+        </a>
+    </div>
+</div>
+
+<!-- Jobs Overview -->
+<div class="card mb-3">
+    <div class="card-header">
+        <h2 class="card-title">Job Overview</h2>
+    </div>
+    <div class="card-body">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value"><%= jobs.filter(j => j.status === 'active').length %></div>
+                <div class="stat-label">Active Jobs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value"><%= jobs.filter(j => j.status === 'completed').length %></div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value"><%= jobs.filter(j => j.status === 'delayed').length %></div>
+                <div class="stat-label">Delayed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">
+                    <%= Math.round(jobs.filter(j => j.status === 'completed').length / Math.max(jobs.length, 1) * 100) %>%
+                </div>
+                <div class="stat-label">Completion Rate</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Jobs Table -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">All Jobs</h2>
+        <div class="card-actions">
+            <span class="text-muted"><%= jobs.length %> jobs found</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <% if (jobs.length === 0) { %>
+            <div class="empty-state">
+                <div class="empty-icon">🔨</div>
+                <h3>No Jobs Found</h3>
+                <p>Get started by creating your first job.</p>
+                <a href="/jobs/new" class="btn btn-primary">Create Job</a>
+            </div>
+        <% } else { %>
+            <div class="table-responsive">
+                <table class="table data-table">
+                    <thead>
+                        <tr>
+                            <th data-sortable="true">Job Name</th>
+                            <th data-sortable="true">Project</th>
+                            <th data-sortable="true">Status</th>
+                            <th data-sortable="true">Priority</th>
+                            <th data-sortable="true">Start Date</th>
+                            <th data-sortable="true">Due Date</th>
+                            <th data-sortable="true">Assigned To</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% jobs.forEach(job => { %>
+                            <tr>
+                                <td>
+                                    <div class="job-info">
+                                        <strong><%= job.name %></strong>
+                                        <% if (job.description) { %>
+                                            <div class="text-muted"><%= job.description.substring(0, 50) %>...</div>
+                                        <% } %>
+                                    </div>
+                                </td>
+                                <td><%= job.projectName || 'N/A' %></td>
+                                <td>
+                                    <span class="status-badge <%= getJobStatusClass(job.status) %>">
+                                        <%= job.status || 'Unknown' %>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="priority-badge <%= getPriorityClass(job.priority) %>">
+                                        <%= job.priority || 'Medium' %>
+                                    </span>
+                                </td>
+                                <td><%= formatDate(job.startDate) %></td>
+                                <td><%= formatDate(job.dueDate) %></td>
+                                <td><%= job.assignedTo || 'Unassigned' %></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="/jobs/<%= job.id %>" class="btn btn-sm btn-outline" title="View">
+                                            👁️
+                                        </a>
+                                        <a href="/jobs/<%= job.id %>/edit" class="btn btn-sm btn-outline" title="Edit">
+                                            ✏️
+                                        </a>
+                                        <button class="btn btn-sm btn-outline" title="Complete" onclick="markComplete('<%= job.id %>')">
+                                            ✅
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<!-- Additional Styles -->
+<style>
+.job-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.job-info .text-muted {
+    font-size: var(--font-size-sm);
+    margin-top: 2px;
+}
+
+.priority-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.priority-high {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.priority-medium {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.priority-low {
+    background: #d1fae5;
+    color: #065f46;
+}
+</style>
+
+<!-- Scripts -->
+<script>
+function getJobStatusClass(status) {
+    const statusMap = {
+        'active': 'status-active',
+        'completed': 'status-completed',
+        'delayed': 'status-on-hold',
+        'pending': 'status-planning'
+    };
+    return statusMap[status] || 'status-default';
+}
+
+function getPriorityClass(priority) {
+    const priorityMap = {
+        'high': 'priority-high',
+        'medium': 'priority-medium',
+        'low': 'priority-low'
+    };
+    return priorityMap[(priority || 'medium').toLowerCase()] || 'priority-medium';
+}
+
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+}
+
+async function markComplete(jobId) {
+    try {
+        const response = await fetch(`/api/jobs/${jobId}/complete`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            showNotification('Job marked as complete', 'success');
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } else {
+            throw new Error('Failed to update job');
+        }
+    } catch (error) {
+        console.error('Error updating job:', error);
+        showNotification('Failed to update job', 'error');
+    }
+}
+</script>

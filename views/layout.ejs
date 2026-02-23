@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Job Planner</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Modern project management software for construction job planning and resource management">
+    <meta name="keywords" content="project management, construction, job planning, resource management, scheduling">
+    <meta name="author" content="The Alleato Group">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <link rel="alternate icon" type="image/png" href="/images/favicon.png">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/styles.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Additional page-specific styles -->
+    <% if (styles) { %>
+        <style><%= styles %></style>
+    <% } %>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">
+                    <div class="logo-icon">JP</div>
+                    <span>Job Planner</span>
+                </a>
+                
+                <ul class="nav-links">
+                    <li><a href="/" class="nav-link <%= active === 'dashboard' ? 'active' : '' %>">Dashboard</a></li>
+                    <li><a href="/projects" class="nav-link <%= active === 'projects' ? 'active' : '' %>">Projects</a></li>
+                    <li><a href="/jobs" class="nav-link <%= active === 'jobs' ? 'active' : '' %>">Jobs</a></li>
+                    <li><a href="/schedule" class="nav-link <%= active === 'schedule' ? 'active' : '' %>">Schedule</a></li>
+                    <li><a href="/resources" class="nav-link <%= active === 'resources' ? 'active' : '' %>">Resources</a></li>
+                    <li><a href="/reports" class="nav-link <%= active === 'reports' ? 'active' : '' %>">Reports</a></li>
+                </ul>
+                
+                <div class="user-menu">
+                    <div class="user-info">
+                        <span class="user-name">System Admin</span>
+                        <span class="user-role">Administrator</span>
+                    </div>
+                    <div class="user-avatar">
+                        <div class="avatar">SA</div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Flash Messages -->
+    <% if (success_msg && success_msg.length > 0) { %>
+        <div class="container">
+            <div class="alert alert-success">
+                <%= success_msg %>
+            </div>
+        </div>
+    <% } %>
+    
+    <% if (error_msg && error_msg.length > 0) { %>
+        <div class="container">
+            <div class="alert alert-error">
+                <%= error_msg %>
+            </div>
+        </div>
+    <% } %>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <%- body %>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Job Planner</h3>
+                    <p>Modern project management software for construction job planning and resource management.</p>
+                    <p>Built by The Alleato Group for scalable construction operations.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="/">Dashboard</a></li>
+                        <li><a href="/projects">Projects</a></li>
+                        <li><a href="/jobs">Jobs</a></li>
+                        <li><a href="/schedule">Schedule</a></li>
+                        <li><a href="/resources">Resources</a></li>
+                        <li><a href="/reports">Reports</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="/docs">Documentation</a></li>
+                        <li><a href="/api-docs">API Reference</a></li>
+                        <li><a href="/support">Support</a></li>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <ul class="footer-links">
+                        <li>Email: support@alleato.com</li>
+                        <li>Phone: (555) 123-4567</li>
+                        <li>Address: 123 Construction Way</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2026 The Alleato Group. All rights reserved. | Job Planner v1.0.0</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/main.js"></script>
+    
+    <!-- Page-specific scripts -->
+    <% if (scripts) { %>
+        <script><%= scripts %></script>
+    <% } %>
+</body>
+</html>
