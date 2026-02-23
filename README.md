@@ -2,6 +2,17 @@
 
 Modern project management website for construction job planning and resource management. Built for The Alleato Group to provide a comprehensive project management interface integrated with the Job Planner API.
 
+## 🚀 Quick Deploy
+
+### One-Click Deployment:
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/bdclymer/job-planner-app)
+[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/bdclymer/job-planner-app)
+
+### Already Deployed:
+- **Static Demo Site:** https://bdclymer.github.io/alleato-job-planner/
+- **GitHub Repository:** https://github.com/bdclymer/job-planner-app
+- **Local Development:** `http://localhost:3000` (development only)
+
 ## 🚀 Features
 
 ### Core Functionality
