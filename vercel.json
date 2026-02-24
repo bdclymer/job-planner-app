@@ -2,20 +2,18 @@
   "version": 2,
   "builds": [
     {
-      "src": "server.js",
+      "src": "server-standalone.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "server.js"
+      "dest": "server-standalone.js"
     }
   ],
   "env": {
     "NODE_ENV": "production",
-    "PORT": "3000",
-    "JOB_PLANNER_API": "https://job-planner-api.vercel.app/api",
-    "CORS_ORIGIN": "https://job-planner-website.vercel.app"
+    "PORT": "3000"
   }
 }
